@@ -1,35 +1,46 @@
 # StackOverhaul
 
-A Minecraft Java Edition 1.20.1 Forge mod focused on configurable stack sizes for items that are normally stackable, with broad compatibility for items added by other mods.
+A Minecraft Java Edition 1.20.1 Forge mod focused on configurable stack sizes for items that are normally stackable, including items registered by other mods.
 
-## Project status
+## Current implementation
 
-Early development. The repository is being set up; builds and in-game compatibility have not yet been verified.
+- Minecraft 1.20.1 with Forge 47.2.0.
+- Forge common config setting: `maxStackSize`.
+- Default configured stack limit: **127**.
+- Items whose current/original maximum stack size is 1 are left unchanged.
+- A Mixin targets `ItemStack#getMaxStackSize()` so the limit is applied through the shared stack-size path.
 
-## Goals
+## Important technical limit
 
-- Target Minecraft 1.20.1 and Minecraft Forge 47.x.
-- Let players configure a stack-size limit.
-- Apply the configured limit automatically to normally stackable items, including items registered by other mods.
-- Preserve non-stackable items such as tools and armor by default.
-- Document known compatibility limitations and test them instead of claiming universal compatibility.
+The initial implementation intentionally caps the value at 127. Vanilla Minecraft 1.20.1 stores item counts in signed-byte contexts in important serialization paths; allowing larger counts without patching all relevant save/network paths could corrupt or truncate stack counts. Values above 127 require a more extensive implementation and compatibility testing.
 
-## Compatibility approach
+This mod is intended to work with mods that use the standard Minecraft item-stack APIs. It cannot promise compatibility with every mod: some mods implement custom inventory limits, hard-code assumptions about 64 items, or use their own serialization.
 
-The intended implementation changes the shared item stack-size behavior rather than maintaining a hand-written list of other mods. Some mods may rely on custom inventory rules, item-specific limits, or assumptions about 64-item stacks; those cases will require testing and may need explicit exclusions or compatibility fixes.
-
-## Development environment
+## Build environment
 
 - Java 17 JDK
 - Minecraft Forge MDK for 1.20.1
-- Gradle / ForgeGradle
+- Gradle 8.x compatible with ForgeGradle 6
 - IntelliJ IDEA (recommended)
 
-Use a Forge 1.20.1 MDK matching the Forge version selected in `build.gradle`. The Gradle wrapper files are not included yet; add them from the matching MDK before building locally.
+The Gradle Wrapper scripts and wrapper JAR are not included yet. For a local development environment, start from the Forge 1.20.1 MDK and copy its wrapper files into this repository, or install a compatible Gradle version locally.
 
-## Configuration target
+## Build
 
-A common Forge config file will expose a configurable maximum stack size. The initial implementation will support normal stackable items and keep items whose vanilla maximum stack size is 1 unchanged.
+After the wrapper files are present, run:
+
+- Windows: `gradlew.bat build`
+- Linux/macOS: `./gradlew build`
+
+The built JAR should appear under `build/libs/`.
+
+## Configuration
+
+After the first launch, look for `config/stackoverhaul-common.toml` and adjust `maxStackSize`. Restart the game/world after changing it.
+
+## Status
+
+Early development. The source and build configuration have been added, but the mod has **not yet been compiled or tested in a Minecraft runtime**. The GitHub Actions build workflow will help detect compile/build issues.
 
 ## License
 
