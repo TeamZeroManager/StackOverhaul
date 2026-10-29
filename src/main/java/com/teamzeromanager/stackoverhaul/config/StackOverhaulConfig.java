@@ -17,9 +17,10 @@ public final class StackOverhaulConfig {
                 .comment(
                         "Maximum stack size for items that are normally stackable.",
                         "Items whose original maximum stack size is 1 remain non-stackable.",
-                        "The initial implementation is capped at 127 to stay within vanilla's signed-byte item-count constraints."
+                        "Counts above 127 require extended ItemStack serialization support.",
+                        "StackOverhaul stores the extended count in NBT; network compatibility still depends on installed mods."
                 )
-                .defineInRange("maxStackSize", 127, 2, 127);
+                .defineInRange("maxStackSize", 500, 2, 500);
 
         BUILDER.pop();
     }
