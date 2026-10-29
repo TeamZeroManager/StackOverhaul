@@ -16,10 +16,10 @@ public final class StackOverhaulConfig {
         MAX_STACK_SIZE = BUILDER
                 .comment(
                         "Maximum stack size for items that are normally stackable.",
-                        "Items whose default maximum stack size is 1 are intended to remain non-stackable.",
-                        "The effective supported limit still depends on Minecraft and other mods."
+                        "Items whose original maximum stack size is 1 remain non-stackable.",
+                        "For this initial version, the limit is capped at 127 to stay within vanilla's signed-byte item-count constraints."
                 )
-                .defineInRange("maxStackSize", 256, 2, 9999);
+                .defineInRange("maxStackSize", 127, 2, 127);
 
         BUILDER.pop();
     }
