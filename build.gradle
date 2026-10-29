@@ -36,6 +36,11 @@ minecraft {
     }
 }
 
+repositories {
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    mavenCentral()
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
     compileOnly 'org.spongepowered:mixin:0.8.5'
