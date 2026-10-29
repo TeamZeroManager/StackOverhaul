@@ -1,47 +1,43 @@
 # StackOverhaul
 
-A Minecraft Java Edition 1.20.1 Forge mod focused on configurable stack sizes for items that are normally stackable, including items registered by other mods.
+Minecraft Java Edition **1.20.1 / Forge 47.2.0** mod that raises the maximum stack size of items which are already stackable, with a configurable limit. The goal is to avoid the known Bigger Stacks mixin collision with Stacc API in the target modpack.
 
 ## Current implementation
 
-- Minecraft 1.20.1 with Forge 47.2.0.
-- Forge common config setting: `maxStackSize`.
-- Default configured stack limit: **127**.
-- Items whose current/original maximum stack size is 1 are left unchanged.
-- A Mixin targets `ItemStack#getMaxStackSize()` so the limit is applied through the shared stack-size path.
+- Registers a Forge common configuration file named `stackoverhaul-common.toml`.
+- `maxStackSize` defaults to **127** and can be set from 2 to 127.
+- A Mixin changes `ItemStack#getMaxStackSize()` for stacks whose item already has a maximum greater than 1. Non-stackable items remain non-stackable.
+- The Mixin does **not** target the `ServerGamePacketListenerImpl` constant that conflicts with Stacc's `CreativeDesyncFixin`.
+- GitHub Actions builds the JAR and uploads it as an artifact for 14 days after each successful run.
 
-## Important technical limit
+## Compatibility and limitations
 
-The initial implementation intentionally caps the value at 127. Vanilla Minecraft 1.20.1 stores item counts in signed-byte contexts in important serialization paths; allowing larger counts without patching all relevant save/network paths could corrupt or truncate stack counts. Values above 127 require a more extensive implementation and compatibility testing.
+This is an initial, conservative implementation. It has not yet been verified in a live Minecraft client or in the full Otherworld [Dungeons & Dragons] modpack. A successful CI build confirms compilation only; it does not confirm runtime mixin loading or every inventory's behavior.
 
-This mod is intended to work with mods that use the standard Minecraft item-stack APIs. It cannot promise compatibility with every mod: some mods implement custom inventory limits, hard-code assumptions about 64 items, or use their own serialization.
+The limit is capped at 127 for this stage because Minecraft 1.20.1 has byte-sized item-count representations in network serialization paths. Values above 127 must not be enabled without replacing or patching the relevant serialization and synchronization paths. Some modded inventories also enforce their own limits.
 
-## Build environment
-
-- Java 17 JDK
-- Minecraft Forge MDK for 1.20.1
-- Gradle 8.x compatible with ForgeGradle 6
-- IntelliJ IDEA (recommended)
-
-The Gradle Wrapper scripts and wrapper JAR are not included yet. For a local development environment, start from the Forge 1.20.1 MDK and copy its wrapper files into this repository, or install a compatible Gradle version locally.
+The mod is designed to coexist with the Stacc API by avoiding the specific conflicting injection point. Full compatibility with Numismatic Overhaul and all other mods still requires in-game testing.
 
 ## Build
 
-After the wrapper files are present, run:
+Requirements: Java 17 and Gradle 8.8 (or the compatible Gradle 8.x release used by the CI workflow).
 
-- Windows: `gradlew.bat build`
-- Linux/macOS: `./gradlew build`
+Run:
 
-The built JAR should appear under `build/libs/`.
+```sh
+gradle build
+```
+
+The output JAR is in `build/libs/`. GitHub Actions also publishes a downloadable build artifact on each successful workflow run.
 
 ## Configuration
 
-After the first launch, look for `config/stackoverhaul-common.toml` and adjust `maxStackSize`. Restart the game/world after changing it.
+Launch Minecraft once, then edit `config/stackoverhaul-common.toml`. Change `maxStackSize` and restart Minecraft. Back up your world before testing mods that alter inventory behavior.
 
 ## Status
 
-Early development. The source and build configuration have been added, but the mod has **not yet been compiled or tested in a Minecraft runtime**. The GitHub Actions build workflow will help detect compile/build issues.
+Early development. Compilation is automated, but runtime testing in Minecraft and in the target modpack remains outstanding.
 
 ## License
 
-No license has been selected yet. Until one is added, all rights are reserved by the repository owner.
+No license has been selected yet. All rights reserved by the repository owner.
