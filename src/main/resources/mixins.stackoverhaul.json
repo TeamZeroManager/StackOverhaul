@@ -5,7 +5,13 @@
   "refmap": "mixins.stackoverhaul.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ContainerMixin",
+    "ItemEntityMixin",
+    "ItemMixin",
+    "ItemStackAccessor",
     "ItemStackMixin",
+    "ItemStackHandlerMixin",
+    "SimpleContainerMixin",
     "SlotMixin"
   ],
   "injectors": {
