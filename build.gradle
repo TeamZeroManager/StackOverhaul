@@ -1,0 +1,83 @@
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+group = 'com.teamzeromanager.stackoverhaul'
+version = '0.1.0'
+
+base {
+    archivesName = 'StackOverhaul'
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    copyIdeResources = true
+
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'info'
+
+            mods {
+                stackoverhaul {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        client {}
+
+        server {
+            args '--nogui'
+        }
+    }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version      : '1.20.1',
+            minecraft_version_range: '[1.20.1,1.21)',
+            forge_version           : '47.2.0',
+            forge_version_range     : '[47,)',
+            loader_version_range    : '[47,)',
+            mod_id                  : 'stackoverhaul',
+            mod_name                : 'StackOverhaul',
+            mod_license             : 'All Rights Reserved',
+            mod_version             : project.version,
+            mod_authors             : 'TeamZeroManager',
+            mod_description         : 'Configurable stack sizes for normally stackable items, designed with broad mod compatibility in mind.'
+    ]
+
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+                'Specification-Title'     : 'StackOverhaul',
+                'Specification-Vendor'    : 'TeamZeroManager',
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : 'TeamZeroManager'
+        ])
+    }
+}
+
+tasks.named('jar').configure {
+    finalizedBy 'reobfJar'
+}
