@@ -19,6 +19,8 @@ public final class StackOverhaul {
                 MOD_ID + "-common.toml"
         );
 
-        LOGGER.info("StackOverhaul initialized. Stack-size behavior integration is not implemented yet.");
+        LOGGER.info("StackOverhaul initialized. Configured maximum stack size: {}.",
+                StackOverhaulConfig.MAX_STACK_SIZE.get());
+        LOGGER.warn("StackOverhaul is an early build. Test inventory, save/load, and multiplayer behavior before using it in an important world.");
     }
 }
