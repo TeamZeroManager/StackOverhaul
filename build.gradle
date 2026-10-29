@@ -32,15 +32,16 @@ minecraft {
         }
 
         client {}
-
-        server {
-            args '--nogui'
-        }
+        server { args '--nogui' }
     }
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
+
+    // Forge's ModLauncher environment provides Mixin at runtime.
+    compileOnly 'org.spongepowered:mixin:0.8.5'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 tasks.named('processResources', ProcessResources).configure {
@@ -48,18 +49,17 @@ tasks.named('processResources', ProcessResources).configure {
             minecraft_version      : '1.20.1',
             minecraft_version_range: '[1.20.1,1.21)',
             forge_version           : '47.2.0',
-            forge_version_range     : '[47,)',
-            loader_version_range    : '[47,)',
-            mod_id                  : 'stackoverhaul',
-            mod_name                : 'StackOverhaul',
+            forge_version_range    : '[47,)',
+            loader_version_range   : '[47,)',
+            mod_id                 : 'stackoverhaul',
+            mod_name               : 'StackOverhaul',
             mod_license             : 'All Rights Reserved',
             mod_version             : project.version,
             mod_authors             : 'TeamZeroManager',
-            mod_description         : 'Configurable stack sizes for normally stackable items, designed with broad mod compatibility in mind.'
+            mod_description        : 'Configurable stack sizes for normally stackable items, designed with broad mod compatibility in mind.'
     ]
 
     inputs.properties replaceProperties
-
     filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
         expand replaceProperties
     }
@@ -73,7 +73,8 @@ jar {
                 'Specification-Version'   : '1',
                 'Implementation-Title'    : project.name,
                 'Implementation-Version'  : project.jar.archiveVersion,
-                'Implementation-Vendor'   : 'TeamZeroManager'
+                'Implementation-Vendor'   : 'TeamZeroManager',
+                'MixinConfigs'             : 'mixins.stackoverhaul.json'
         ])
     }
 }
