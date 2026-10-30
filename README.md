@@ -1,22 +1,28 @@
 # StackOverhaul
 
-Minecraft Java Edition **1.20.1 / Forge 47.2.0** mod that raises the maximum stack size of items which are already stackable, with a configurable limit. The goal is to avoid the known Bigger Stacks mixin collision with Stacc API in the target modpack.
+Minecraft Java Edition **1.20.1 / Forge 47.2.0** mod that raises the maximum stack size of items which are already stackable. The goal is to avoid the known Bigger Stacks mixin collision with Stacc API in the target modpack.
 
 ## Current implementation
 
 - Registers a Forge common configuration file named `stackoverhaul-common.toml`.
-- `maxStackSize` defaults to **127** and can be set from 2 to 127.
-- A Mixin changes `ItemStack#getMaxStackSize()` for stacks whose item already has a maximum greater than 1. Non-stackable items remain non-stackable.
+- The current default and configurable ceiling are **1500** (minimum 2).
+- Items that are non-stackable by default remain non-stackable.
+- Extended counts are stored in the `StackOverhaulCount` NBT tag when they exceed 127.
 - The Mixin does **not** target the `ServerGamePacketListenerImpl` constant that conflicts with Stacc's `CreativeDesyncFixin`.
 - GitHub Actions builds the JAR and uploads it as an artifact for 14 days after each successful run.
 
-## Compatibility and limitations
+## Testing status
 
-This is an initial, conservative implementation. It has not yet been verified in a live Minecraft client or in the full Otherworld [Dungeons & Dragons] modpack. A successful CI build confirms compilation only; it does not confirm runtime mixin loading or every inventory's behavior.
+- **127 items per stack:** previously tested successfully.
+- **500 items per stack:** tested successfully in the Otherworld single-player instance, including chest storage and reopening the world without losing the count.
+- **1500 items per stack:** newly configured; runtime testing is still required.
+- Block placement, item pickup, every modded inventory, multiplayer synchronization, and compatibility with all installed mods should be tested before relying on the new limit in an important world.
 
-The limit is capped at 127 for this stage because Minecraft 1.20.1 has byte-sized item-count representations in network serialization paths. Values above 127 must not be enabled without replacing or patching the relevant serialization and synchronization paths. Some modded inventories also enforce their own limits.
+A successful CI build confirms compilation only; it does not confirm runtime mixin loading or every inventory and network path.
 
-The mod is designed to coexist with the Stacc API by avoiding the specific conflicting injection point. Full compatibility with Numismatic Overhaul and all other mods still requires in-game testing.
+## Compatibility notes
+
+The mod is designed to coexist with Stacc API by avoiding the specific conflicting injection point used by Bigger Stacks. The current successful tests are limited to the reported single-player Otherworld setup; broader compatibility is not guaranteed.
 
 ## Build
 
@@ -32,11 +38,11 @@ The output JAR is in `build/libs/`. GitHub Actions also publishes a downloadable
 
 ## Configuration
 
-Launch Minecraft once, then edit `config/stackoverhaul-common.toml`. Change `maxStackSize` and restart Minecraft. Back up your world before testing mods that alter inventory behavior.
+Launch Minecraft once, then edit `config/stackoverhaul-common.toml`. The default is now `maxStackSize = 1500`, and the allowed range is 2–1500. Restart Minecraft after changing the value. Back up your world before testing mods that alter inventory behavior.
 
 ## Status
 
-Early development. Compilation is automated, but runtime testing in Minecraft and in the target modpack remains outstanding.
+Early development. The 500-item limit has been tested in the target single-player modpack; the new 1500-item ceiling and broader behavior still need in-game validation.
 
 ## License
 
