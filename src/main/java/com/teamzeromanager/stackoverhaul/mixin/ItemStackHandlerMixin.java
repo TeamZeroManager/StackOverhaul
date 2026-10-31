@@ -11,7 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ItemStackHandlerMixin {
     @Inject(method = "getSlotLimit", at = @At("RETURN"), cancellable = true, remap = false)
     private void stackoverhaul$applyHandlerLimit(int slot, CallbackInfoReturnable<Integer> cir) {
-        if (cir.getReturnValueI() > 1) {
+        // Forge's default ItemStackHandler limit is 64. Leave custom slot limits untouched.
+        if (cir.getReturnValueI() == 64) {
             cir.setReturnValue(StackOverhaulConfig.MAX_STACK_SIZE.get());
         }
     }
