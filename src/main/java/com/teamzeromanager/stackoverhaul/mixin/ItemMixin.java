@@ -11,7 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ItemMixin {
     @Inject(method = "getMaxStackSize", at = @At("RETURN"), cancellable = true)
     private void stackoverhaul$applyConfiguredLimit(CallbackInfoReturnable<Integer> cir) {
-        if (cir.getReturnValueI() > 1) {
+        // Expand the vanilla default only. Preserve custom limits assigned by other mods.
+        if (cir.getReturnValueI() == 64) {
             cir.setReturnValue(StackOverhaulConfig.MAX_STACK_SIZE.get());
         }
     }
