@@ -13,6 +13,6 @@ public interface ContainerMixin {
      */
     @Overwrite
     default int getMaxStackSize() {
-        return StackOverhaulConfig.MAX_STACK_SIZE.get();
+        return StackOverhaulConfig.MAX_STACK_SIZE;
     }
 }
