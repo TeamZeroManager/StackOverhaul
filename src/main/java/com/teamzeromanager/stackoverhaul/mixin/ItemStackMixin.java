@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemStack.class)
@@ -20,21 +20,18 @@ public abstract class ItemStackMixin {
     }
 
     /**
-     * Vanilla stores Count as a signed byte. Keep a clamped Count for older
-     * readers and store the real amount in a separate integer tag.
+     * Vanilla 1.20.1 stores Count as a signed byte in item NBT.
+     * Keep a safe byte value for compatibility and persist the real amount
+     * in a separate integer tag.
      */
-    @Redirect(
-            method = "save",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/nbt/CompoundTag;putByte(Ljava/lang/String;B)V"
-            )
+    @Inject(
+            method = "save(Lnet/minecraft/nbt/CompoundTag;)Lnet/minecraft/nbt/CompoundTag;",
+            at = @At("TAIL")
     )
-    private void stackoverhaul$saveExtendedCount(CompoundTag tag, String key, byte ignoredCount) {
+    private void stackoverhaul$saveExtendedCount(CompoundTag tag, CallbackInfoReturnable<CompoundTag> cir) {
         int count = ((ItemStack) (Object) this).getCount();
-        tag.putByte(key, (byte) Math.min(count, Byte.MAX_VALUE));
-
         if (count > Byte.MAX_VALUE) {
+            tag.putByte("Count", (byte) Byte.MAX_VALUE);
             tag.putInt("StackOverhaulCount", count);
         } else {
             tag.remove("StackOverhaulCount");
@@ -42,21 +39,15 @@ public abstract class ItemStackMixin {
     }
 
     /**
-     * Restore the integer count after vanilla's constructor assigns the
-     * byte-sized Count value.
+     * Restore after vanilla has finished reading the byte-sized Count field.
      */
-    @Redirect(
-            method = "<init>(Lnet/minecraft/nbt/CompoundTag;)V",
-            at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/world/item/ItemStack;count:I",
-                    opcode = org.objectweb.asm.Opcodes.PUTFIELD
-            )
-    )
-    private void stackoverhaul$loadExtendedCount(ItemStack stack, int vanillaCount, CompoundTag tag) {
-        int count = tag.contains("StackOverhaulCount")
-                ? tag.getInt("StackOverhaulCount")
-                : vanillaCount;
-        ((ItemStackAccessor) (Object) stack).stackoverhaul$setCount(count);
+    @Inject(method = "<init>(Lnet/minecraft/nbt/CompoundTag;)V", at = @At("TAIL"))
+    private void stackoverhaul$loadExtendedCount(CompoundTag tag, CallbackInfo ci) {
+        if (tag.contains("StackOverhaulCount")) {
+            int count = tag.getInt("StackOverhaulCount");
+            ((ItemStackAccessor) (Object) this).stackoverhaul$setCount(
+                    Math.max(0, Math.min(count, StackOverhaulConfig.MAX_STACK_SIZE))
+            );
+        }
     }
 }
