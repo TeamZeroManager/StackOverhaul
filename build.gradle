@@ -1,7 +1,18 @@
-plugins {
-    id 'net.fabricmc.fabric-loom-remap' version '1.20.0-alpha.23'
-    id 'maven-publish'
+buildscript {
+    repositories {
+        maven { url = 'https://maven.fabricmc.net/' }
+        mavenCentral()
+    }
+    configurations.classpath {
+        resolutionStrategy.force 'com.google.code.gson:gson:2.13.2'
+    }
+    dependencies {
+        classpath 'net.fabricmc:fabric-loom:1.20.0-alpha.23'
+    }
 }
+
+apply plugin: 'net.fabricmc.fabric-loom-remap'
+apply plugin: 'maven-publish'
 
 group = 'com.teamzeromanager.stackoverhaul'
 version = '0.1.0-fabric.1.20.1'
