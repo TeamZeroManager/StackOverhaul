@@ -15,7 +15,7 @@ public abstract class ItemStackMixin {
     private void stackoverhaul$applyConfiguredLimit(CallbackInfoReturnable<Integer> cir) {
         // Only replace the vanilla default; retain modded per-item stack limits.
         if (cir.getReturnValueI() == 64) {
-            cir.setReturnValue(StackOverhaulConfig.MAX_STACK_SIZE.get());
+            cir.setReturnValue(StackOverhaulConfig.MAX_STACK_SIZE);
         }
     }
 
