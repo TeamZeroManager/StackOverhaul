@@ -1,26 +1,20 @@
 package com.teamzeromanager.stackoverhaul;
 
 import com.teamzeromanager.stackoverhaul.config.StackOverhaulConfig;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
+import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Mod(StackOverhaul.MOD_ID)
-public final class StackOverhaul {
+public final class StackOverhaul implements ModInitializer {
     public static final String MOD_ID = "stackoverhaul";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public StackOverhaul() {
-        ModLoadingContext.get().registerConfig(
-                ModConfig.Type.COMMON,
-                StackOverhaulConfig.SPEC,
-                MOD_ID + "-common.toml"
-        );
+    @Override
+    public void onInitialize() {
+        StackOverhaulConfig.load();
 
-        LOGGER.info("StackOverhaul initialized. Configured maximum stack size: {}.",
-                StackOverhaulConfig.MAX_STACK_SIZE.get());
-        LOGGER.warn("StackOverhaul is an early build. Test inventory, save/load, and multiplayer behavior before using it in an important world.");
+        LOGGER.info("StackOverhaul (Fabric) initialized. Configured maximum stack size: {}.",
+                StackOverhaulConfig.MAX_STACK_SIZE);
+        LOGGER.warn("StackOverhaul changes vanilla item stack internals. Back up worlds and test modded inventories and multiplayer before relying on it.");
     }
 }
