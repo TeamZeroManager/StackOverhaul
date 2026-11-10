@@ -13,6 +13,6 @@ public abstract class ItemEntityMixin {
             constant = @Constant(intValue = 64)
     )
     private static int stackoverhaul$extendDroppedStackLimit(int originalLimit) {
-        return Math.max(originalLimit, StackOverhaulConfig.MAX_STACK_SIZE.get());
+        return Math.max(originalLimit, StackOverhaulConfig.MAX_STACK_SIZE);
     }
 }
