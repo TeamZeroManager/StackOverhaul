@@ -31,7 +31,7 @@ The supported range is 2–1500. Restart Minecraft after changing the value.
 
 ## Build
 
-Requirements: Java 17 and Gradle 8.8.
+Requirements: Java 17 and Gradle 8.12.
 
 ```sh
 gradle build
