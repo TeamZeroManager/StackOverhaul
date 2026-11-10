@@ -1,19 +1,7 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.fabricmc.net/' }
-        mavenCentral()
-    }
-    configurations.classpath {
-        resolutionStrategy.force 'com.google.code.gson:gson:2.13.2'
-    }
-    dependencies {
-        classpath 'com.google.code.gson:gson:2.13.2'
-        classpath 'net.fabricmc:fabric-loom:1.20.0-alpha.23'
-    }
+plugins {
+    id 'org.quiltmc.loom' version '1.4.1'
+    id 'maven-publish'
 }
-
-apply plugin: 'net.fabricmc.fabric-loom-remap'
-apply plugin: 'maven-publish'
 
 group = 'com.teamzeromanager.stackoverhaul'
 version = '0.1.0-fabric.1.20.1'
@@ -24,6 +12,7 @@ base {
 
 repositories {
     maven { url = 'https://maven.fabricmc.net/' }
+    maven { url = 'https://maven.quiltmc.org/repository/release' }
     mavenCentral()
 }
 
@@ -32,7 +21,7 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation 'net.fabricmc:fabric-loader:0.15.11'
     modImplementation 'net.fabricmc.fabric-api:fabric-api:0.92.2+1.20.1'
-    annotationProcessor 'net.fabricmc:sponge-mixin:0.13.4+mixin.0.8.5'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 loom {
