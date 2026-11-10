@@ -13,7 +13,7 @@ public abstract class ItemMixin {
     private void stackoverhaul$applyConfiguredLimit(CallbackInfoReturnable<Integer> cir) {
         // Expand the vanilla default only. Preserve custom limits assigned by other mods.
         if (cir.getReturnValueI() == 64) {
-            cir.setReturnValue(StackOverhaulConfig.MAX_STACK_SIZE.get());
+            cir.setReturnValue(StackOverhaulConfig.MAX_STACK_SIZE);
         }
     }
 }
