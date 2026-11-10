@@ -14,14 +14,14 @@ public abstract class SlotMixin {
     private void stackoverhaul$applyConfiguredSlotLimit(CallbackInfoReturnable<Integer> cir) {
         // Preserve deliberately restricted modded slots (for example, 1, 16 or 32).
         if (cir.getReturnValueI() == 64) {
-            cir.setReturnValue(StackOverhaulConfig.MAX_STACK_SIZE.get());
+            cir.setReturnValue(StackOverhaulConfig.MAX_STACK_SIZE);
         }
     }
 
     @Inject(method = "getMaxStackSize(Lnet/minecraft/world/item/ItemStack;)I", at = @At("RETURN"), cancellable = true)
     private void stackoverhaul$applyConfiguredItemSlotLimit(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
         if (!stack.isEmpty() && stack.getMaxStackSize() > 1 && cir.getReturnValueI() == 64) {
-            cir.setReturnValue(StackOverhaulConfig.MAX_STACK_SIZE.get());
+            cir.setReturnValue(StackOverhaulConfig.MAX_STACK_SIZE);
         }
     }
 }
