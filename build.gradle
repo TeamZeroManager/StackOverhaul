@@ -20,6 +20,13 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation 'net.fabricmc:fabric-loader:0.15.11'
     modImplementation 'net.fabricmc.fabric-api:fabric-api:0.92.2+1.20.1'
+    annotationProcessor 'net.fabricmc:sponge-mixin:0.13.4+mixin.0.8.5'
+}
+
+loom {
+    mixin {
+        defaultRefmapName = 'mixins.stackoverhaul.refmap.json'
+    }
 }
 
 java {
@@ -38,11 +45,5 @@ processResources {
     inputs.property 'version', project.version
     filesMatching('fabric.mod.json') {
         expand 'version': project.version
-    }
-}
-
-jar {
-    from('LICENSE') {
-        rename { "${it}_${base.archivesName.get()}" }
     }
 }
