@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "stackoverhaul",
+  "version": "${version}",
+  "name": "StackOverhaul",
+  "description": "Configurable stack sizes for normally stackable items, with extended NBT count handling.",
+  "authors": [
+    "TeamZeroManager"
+  ],
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.teamzeromanager.stackoverhaul.StackOverhaul"
+    ]
+  },
+  "mixins": [
+    "mixins.stackoverhaul.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.20.1",
+    "java": ">=17"
+  }
+}
