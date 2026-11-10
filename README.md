@@ -31,7 +31,7 @@ The supported range is 2–1500. Restart Minecraft after changing the value.
 
 ## Build
 
-Requirements: JDK 25 and Gradle 9.9.0 to run the current Fabric Loom build. The mod itself is compiled for Java 17 and runs on Minecraft 1.20.1's Java runtime.
+Requirements: Java 17 and Gradle 8.8. Quilt Loom is used as the build tool; the produced mod targets Fabric Loader on Minecraft 1.20.1.
 
 ```sh
 gradle build
